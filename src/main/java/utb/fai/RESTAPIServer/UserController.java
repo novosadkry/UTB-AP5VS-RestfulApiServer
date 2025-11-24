@@ -4,11 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -32,7 +28,40 @@ public class UserController {
 
     @PostMapping("/createUser")
     public ResponseEntity<MyUser> createUser(@RequestBody MyUser newUser) {
-        // TODO: implement logic of /createUser endpoint
+        if (newUser.isUserDataValid()) {
+            var savedUser = userRepository.save(newUser);
+            return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+        }
+
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping("/editUser")
+    public ResponseEntity<MyUser> editUser(@RequestParam Long id, @RequestBody MyUser updatedUser) {
+        return userRepository.findById(id)
+            .map(existingUser -> {
+                existingUser.setName(updatedUser.getName());
+                existingUser.setEmail(updatedUser.getEmail());
+                existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+                var savedUser = userRepository.save(existingUser);
+                return new ResponseEntity<>(savedUser, HttpStatus.OK);
+            })
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @DeleteMapping("/deleteUser")
+    public ResponseEntity<Void> deleteUserById(@RequestParam Long id) {
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @DeleteMapping("/deleteAllUsers")
+    public ResponseEntity<Void> deleteAllUsers() {
+        userRepository.deleteAll();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
