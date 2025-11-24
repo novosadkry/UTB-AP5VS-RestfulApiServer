@@ -20,8 +20,16 @@ public class MyUser {
     }
 
     public boolean isUserDataValid() {
-        // Add your validation logic here (e.g., email and phone number format
-        // validation)
+        if (name == null || name.isEmpty()) {
+            return false;
+        }
+        if (email == null || email.isEmpty() || !email.contains("@")) {
+            return false;
+        }
+        if (phoneNumber == null || phoneNumber.isEmpty() || !phoneNumber.matches("\\+?[0-9]+")) {
+            return false;
+        }
+
         return true;
     }
 

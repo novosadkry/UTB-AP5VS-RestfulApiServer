@@ -28,16 +28,20 @@ public class UserController {
 
     @PostMapping("/createUser")
     public ResponseEntity<MyUser> createUser(@RequestBody MyUser newUser) {
-        if (newUser.isUserDataValid()) {
-            var savedUser = userRepository.save(newUser);
-            return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+        if (!newUser.isUserDataValid()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        var savedUser = userRepository.save(newUser);
+        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
     @PutMapping("/editUser")
     public ResponseEntity<MyUser> editUser(@RequestParam Long id, @RequestBody MyUser updatedUser) {
+        if (!updatedUser.isUserDataValid()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         return userRepository.findById(id)
             .map(existingUser -> {
                 existingUser.setName(updatedUser.getName());
