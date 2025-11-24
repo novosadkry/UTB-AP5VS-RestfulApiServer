@@ -12,17 +12,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController {
+    private final UserRepository userRepository;
+
+    public UserController(final UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @GetMapping("/users")
     public List<MyUser> getAllUsers() {
-        // TODO: implement logic of /users endpoint
-        return null;
+        return userRepository.findAll();
     }
 
     @GetMapping("/getUser")
     public ResponseEntity<MyUser> getUserById(@RequestParam Long id) {
-        // TODO: implement logic of /getUser endpoint
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return userRepository.findById(id)
+            .map(myUser -> new ResponseEntity<>(myUser, HttpStatus.OK))
+            .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("/createUser")
@@ -30,7 +35,4 @@ public class UserController {
         // TODO: implement logic of /createUser endpoint
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-
-    // TODO: Define remaining endpoints in the same way. For id parameter use annotation @RequestParam with name "id" and for MyUser structure use @RequestBody.
-
 }

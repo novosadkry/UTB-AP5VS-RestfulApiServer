@@ -1,8 +1,11 @@
 package utb.fai.RESTAPIServer;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
+@Entity
 public class MyUser {
-
+    @Id
     private Long id;
     private String name;
     private String email;
@@ -22,6 +25,11 @@ public class MyUser {
         return true;
     }
 
-    // TODO: Getters and setters
-    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
