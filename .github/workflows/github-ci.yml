@@ -38,7 +38,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: app-libs
-        path: app/build/libs/*.jar
+        path: ./build/libs/*.jar
 
   test:
     runs-on: ubuntu-latest
@@ -58,7 +58,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: app-libs
-        path: build/libs
+        path: ./build/libs
 
     - name: Run black box tests
       run: java -jar NATT.jar -nc https://gitlab.com/ap5vs/test-config/restful-api-server-config/-/raw/main/test-config-6.yaml?ref_type=heads
